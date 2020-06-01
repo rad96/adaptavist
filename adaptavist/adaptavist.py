@@ -484,8 +484,6 @@ class Adaptavist():
 
         current_values = response.get("customFields", {}).get("code_base_url", "")
         code_bases = update_multiline_field(current_values, code_bases)
-        if code_bases != current_values:
-            request_data.update({"customFields": {"code_base_url": code_bases}})
 
         if not request_data:
             return True
