@@ -191,9 +191,10 @@ class Adaptavist():
         request_url = self.jira_server + "/rest/tests/1.0/project/{0}/foldertree/{1}?startAt={2}&maxResults=200"
 
         try:
-            request = requests.get(request_url.format(urllib.parse.quote_plus(project_id), folder_type.replace("_", "").lower(), 0),
-                                   auth=self.authentication,
-                                   headers=self.headers)
+            request = requests.get(
+                request_url.format(urllib.parse.quote_plus(project_id), folder_type.replace("_", "").lower(), 0),
+                auth=self.authentication,
+                headers=self.headers)
 
             request.raise_for_status()
         except HTTPError as ex:
@@ -376,7 +377,8 @@ class Adaptavist():
                         "priority": priority,
                         "estimatedTime": estimated_time * 1000 if estimated_time is not None else None,
                         "labels": labels,
-                        "issueLinks": [x.strip() for x in issue_links.split(",")] if isinstance(issue_links, str) else issue_links,
+                        "issueLinks": [x.strip() for x in issue_links.split(",")] if isinstance(issue_links,
+                                                                                                str) else issue_links,
                         "testScript": {"type": "STEP_BY_STEP", "steps": steps}}
 
         try:
@@ -423,7 +425,8 @@ class Adaptavist():
 
         keep_original_value = r"\{keep_original_value\}"
 
-        folder = kwargs.pop("folder", keep_original_value)  # differ between folder not passed and folder set to None (to move to root)
+        folder = kwargs.pop("folder",
+                            keep_original_value)  # differ between folder not passed and folder set to None (to move to root)
         name = kwargs.pop("name", None)
         objective = kwargs.pop("objective", None)
         precondition = kwargs.pop("precondition", None)
@@ -456,11 +459,14 @@ class Adaptavist():
                         "objective": objective or response.get("objective", None),
                         "precondition": precondition or response.get("precondition", None),
                         "priority": priority or response.get("priority", None),
-                        "estimatedTime": estimated_time * 1000 if estimated_time is not None else response.get("estimatedTime", None)}
+                        "estimatedTime": estimated_time * 1000 if estimated_time is not None else response.get(
+                            "estimatedTime", None)}
 
-        folder = response.get("folder", None) if folder == keep_original_value else (("/" + folder).replace("//", "/") if folder else folder or None)
+        folder = response.get("folder", None) if folder == keep_original_value else (
+            ("/" + folder).replace("//", "/") if folder else folder or None)
         if folder != response.get("folder", None):
-            if folder and folder not in self.get_folders(project_key=response.get("projectKey"), folder_type="TEST_CASE"):
+            if folder and folder not in self.get_folders(project_key=response.get("projectKey"),
+                                                         folder_type="TEST_CASE"):
                 self.create_folder(project_key=response.get("projectKey"), folder_type="TEST_CASE", folder_name=folder)
             request_data.update({"folder": folder})
 
@@ -814,8 +820,10 @@ class Adaptavist():
                         "status": "Approved",
                         "objective": objective,
                         "labels": labels,
-                        "issueLinks": [x.strip() for x in issue_links.split(",")] if isinstance(issue_links, str) else issue_links,
-                        "testRunKeys": [x.strip() for x in test_runs.split(",")] if isinstance(test_runs, str) else test_runs}
+                        "issueLinks": [x.strip() for x in issue_links.split(",")] if isinstance(issue_links,
+                                                                                                str) else issue_links,
+                        "testRunKeys": [x.strip() for x in test_runs.split(",")] if isinstance(test_runs,
+                                                                                               str) else test_runs}
 
         try:
             request = requests.post(request_url,
@@ -857,7 +865,8 @@ class Adaptavist():
 
         keep_original_value = r"\{keep_original_value\}"
 
-        folder = kwargs.pop("folder", keep_original_value)  # differ between folder not passed and folder set to None (to move to root)
+        folder = kwargs.pop("folder",
+                            keep_original_value)  # differ between folder not passed and folder set to None (to move to root)
         name = kwargs.pop("name", None)
         objective = kwargs.pop("objective", None)
         labels = kwargs.pop("labels", None) or []
@@ -885,9 +894,11 @@ class Adaptavist():
         request_data = {"name": name or response.get("name", None),
                         "objective": objective or response.get("objective", None)}
 
-        folder = response.get("folder", None) if folder == keep_original_value else (("/" + folder).replace("//", "/") if folder else folder or None)
+        folder = response.get("folder", None) if folder == keep_original_value else (
+            ("/" + folder).replace("//", "/") if folder else folder or None)
         if folder != response.get("folder", None):
-            if folder and folder not in self.get_folders(project_key=response.get("projectKey"), folder_type="TEST_PLAN"):
+            if folder and folder not in self.get_folders(project_key=response.get("projectKey"),
+                                                         folder_type="TEST_PLAN"):
                 self.create_folder(project_key=response.get("projectKey"), folder_type="TEST_PLAN", folder_name=folder)
             request_data.update({"folder": folder})
 
@@ -1037,7 +1048,8 @@ class Adaptavist():
             request_url = self.adaptavist_api_url + "/testrun/search?query={0}&startAt={1}&maxResults=1000&fields={2}"
 
             try:
-                request = requests.get(request_url.format(urllib.parse.quote_plus(search_mask or ""), i, urllib.parse.quote_plus(fields or "")),
+                request = requests.get(request_url.format(urllib.parse.quote_plus(search_mask or ""), i,
+                                                          urllib.parse.quote_plus(fields or "")),
                                        auth=self.authentication,
                                        headers=self.headers)
                 request.raise_for_status()
@@ -1107,7 +1119,9 @@ class Adaptavist():
 
         test_cases_list_of_dicts = []
         for test_case_key in test_cases:
-            test_cases_list_of_dicts.append({"testCaseKey": test_case_key, "environment": environment, "executedBy": get_executor(), "assignedTo": get_executor()})
+            # test_cases_list_of_dicts.append({"testCaseKey": test_case_key, "environment": environment, "executedBy": get_executor(), "assignedTo": get_executor()})
+            test_cases_list_of_dicts.append(
+                {"testCaseKey": test_case_key, "environment": environment})
 
         request_url = self.adaptavist_api_url + "/testrun"
 
@@ -1177,7 +1191,8 @@ class Adaptavist():
                                    # version=test_run.get("version", None),
                                    # iteration=test_run.get("iteration", None),
                                    # owner=test_run.get("owner", None),
-                                   environment=environment or ((test_run_items[0].get("environment", None) if test_run_items else None)),
+                                   environment=environment or (
+                                   (test_run_items[0].get("environment", None) if test_run_items else None)),
                                    test_cases=[item["testCaseKey"] for item in test_run_items])
 
         # get test plans that contain the original test run and add cloned test run to them
@@ -1239,11 +1254,11 @@ class Adaptavist():
                         "testCase": result.get("testCase", {}),
                         "testRun": result.get("testRun", {}),
                         "estimatedTime": result.get("estimatedTime", None),
-                        "executedBy": result["user"].get("key", None),
+                        # "executedBy": result["user"].get("key", None),
                         "executionDate": result.get("executionDate", None),
                         "executionTime": result.get("executionTime", None),
                         "environment": result.get("environment", {}).get("name", None),
-                        "assignedTo": result.get("assignedTo", None),
+                        # "assignedTo": result.get("assignedTo", None),
                         "automated": result.get("automated", False),
                         "status": result["status"]["name"],
                         "issueLinks": result.get("issues", [])
@@ -1318,11 +1333,12 @@ class Adaptavist():
 
         request_data = []
         for result in results:
-            if exclude_existing_test_cases and result["testCaseKey"] in [item["testCaseKey"] for item in test_run.get("items", [])]:
+            if exclude_existing_test_cases and result["testCaseKey"] in [item["testCaseKey"] for item in
+                                                                         test_run.get("items", [])]:
                 continue
             data = {key: value for key, value in result.items()}
-            data["executedBy"] = get_executor()
-            data["assignedTo"] = data["executedBy"]
+            # data["executedBy"] = get_executor()
+            # data["assignedTo"] = data["executedBy"]
             if environment:
                 data["environment"] = environment
             request_data.append(data)
@@ -1423,15 +1439,16 @@ class Adaptavist():
 
         request_data = {}
         request_data["environment"] = environment
-        request_data["executedBy"] = get_executor()
-        request_data["assignedTo"] = request_data["executedBy"]
+        # request_data["executedBy"] = get_executor()
+        # request_data["assignedTo"] = request_data["executedBy"]
         request_data["status"] = status
         if comment is not None:
             request_data["comment"] = comment
         if execute_time is not None:
             request_data["executionTime"] = execute_time * 1000
         if issue_links:
-            request_data["issueLinks"] = [x.strip() for x in issue_links.split(",")] if isinstance(issue_links, str) else issue_links
+            request_data["issueLinks"] = [x.strip() for x in issue_links.split(",")] if isinstance(issue_links,
+                                                                                                   str) else issue_links
 
         try:
             request = requests.post(request_url,
@@ -1493,15 +1510,16 @@ class Adaptavist():
 
         request_data = {}
         request_data["environment"] = environment
-        request_data["executedBy"] = get_executor()
-        request_data["assignedTo"] = request_data["executedBy"]
+        # request_data["executedBy"] = get_executor()
+        # request_data["assignedTo"] = request_data["executedBy"]
         request_data["status"] = status
         if comment is not None:
             request_data["comment"] = comment
         if execute_time is not None:
             request_data["executionTime"] = execute_time * 1000
         if issue_links:
-            request_data["issueLinks"] = [x.strip() for x in issue_links.split(",")] if isinstance(issue_links, str) else issue_links
+            request_data["issueLinks"] = [x.strip() for x in issue_links.split(",")] if isinstance(issue_links,
+                                                                                                   str) else issue_links
 
         try:
             request = requests.put(request_url,
@@ -1602,7 +1620,8 @@ class Adaptavist():
         :return: id of the test result that was updated
         :rtype: int
         """
-        self.logger.debug("edit_test_script_status(\"%s\", \"%s\", \"%i\", \"%s\")", test_run_key, test_case_key, step, status)
+        self.logger.debug("edit_test_script_status(\"%s\", \"%s\", \"%i\", \"%s\")", test_run_key, test_case_key, step,
+                          status)
 
         comment = kwargs.pop("comment", None)
         environment = kwargs.pop("environment", None)
@@ -1629,8 +1648,8 @@ class Adaptavist():
 
         request_data = {}
         request_data["environment"] = environment
-        request_data["executedBy"] = get_executor()
-        request_data["assignedTo"] = request_data["executedBy"]
+        # request_data["executedBy"] = get_executor()
+        # request_data["assignedTo"] = request_data["executedBy"]
         request_data["status"] = test_result.get("status")  # mandatory, to keep test result status unchanged
         request_data["scriptResults"] = script_results
 
@@ -1666,7 +1685,8 @@ class Adaptavist():
         :returns: True if succeeded, False if not
         :rtype: bool
         """
-        self.logger.debug("add_test_script_attachment(\"%s\", \"%i\", \"%s\", \"%s\")", test_result_id, step, attachment, filename)
+        self.logger.debug("add_test_script_attachment(\"%s\", \"%i\", \"%s\", \"%s\")", test_result_id, step,
+                          attachment, filename)
 
         needs_to_be_closed = False
         if isinstance(attachment, str):
